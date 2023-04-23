@@ -13,19 +13,10 @@ env:
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu-20.04
-      env:
-        RUNNER_TOOL_CACHE: /opt/hostedtoolcache
-      volumes:
-        - runner-workspace:/github/workspace
-    env:
-      CI: true
-      NODE_VERSION: 16.x
 
     steps:
       - name: Checkout files
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build container image latest version
         run: docker build -t $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) .
@@ -44,15 +35,6 @@ jobs:
   deploy:
     needs: build_and_push
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu-20.04
-      env:
-        RUNNER_TOOL_CACHE: /opt/hostedtoolcache
-      volumes:
-        - runner-workspace:/github/workspace
-    env:
-      CI: true
-      NODE_VERSION: 16.x
 
     steps:
       - name: Deploy to Digital Ocean droplet via SSH action
