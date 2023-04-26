@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Deploy to Digital Ocean droplet via SSH action
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
@@ -49,6 +49,12 @@ jobs:
           script: |
             # login docker
             docker login -u $DOCKER_USER -p $DOCKER_PASSWORD registry.digitalocean.com
+
+            # Stop running container
+            docker stop $(echo $IMAGE_NAME)
+
+            # Remove old container
+            docker rm $(echo $IMAGE_NAME)
 
             # Run a new container from a new image
             docker run -d \
